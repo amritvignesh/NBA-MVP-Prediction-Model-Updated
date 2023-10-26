@@ -49,6 +49,7 @@ basic_stats <- basic_stats %>%
 basic_stats_train <- basic_stats %>% filter(season != 2023)
 basic_stats_test <- basic_stats %>% filter(season == 2023)
 basic_stats_reg <- glm(mvp ~ ppg + apg + rpg + spg + bpg + win, data = basic_stats_train, family = binomial)
+summary(basic_stats_reg)
 
 basic_stats_train <- basic_stats_train %>%
   ungroup() %>%

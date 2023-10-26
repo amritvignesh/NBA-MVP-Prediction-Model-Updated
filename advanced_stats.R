@@ -27,6 +27,7 @@ advanced_stats <- inner_join(advanced_stats, mvp_awards, by = c("season", "idPla
 advanced_stats_train <- advanced_stats %>% filter(season != 2023)
 advanced_stats_test <- advanced_stats %>% filter(season == 2023)
 advanced_stats_reg <- glm(mvp ~ per + ws48 + bpm + vorp, data = advanced_stats_train, family = binomial)
+summary(advanced_stats_reg)
 
 advanced_stats_train <- advanced_stats_train %>%
   ungroup() %>%
@@ -41,7 +42,7 @@ advanced_stats_test <- advanced_stats_test %>%
   mutate(prediction = predict(advanced_stats_reg, advanced_stats_test, type = "response")) %>%
   group_by(season) %>%
   mutate(mvp_prob = prediction/sum(prediction)) %>%
-  mutate(mvp_won = ifelse(mvp == 2, "WON", "")) %>%
+  mutate(mvp_won = ifelse(mvp == 1, "WON", "")) %>%
   ungroup() 
 
 subfolder_path_2 <- "advanced/"
@@ -87,7 +88,7 @@ t_2023_2 <- advanced_stats_test %>%
   arrange(-mvp_prob) %>%
   filter(row_number() <= 6) %>%
   ungroup()
-testtable_2 <- t_2023 %>% gt() %>% 
+testtable_2 <- t_2023_2 %>% gt() %>% 
   cols_align(
     align = "center",
     columns = c(player, team, season, mvp_prob, mvp_won)
@@ -114,7 +115,6 @@ testtable_2 <- t_2023 %>% gt() %>%
   )
 gtsave(testtable_2, "advanced/2023advanced.png")
 
-rm(advannced_stats_test)
 
 
 
